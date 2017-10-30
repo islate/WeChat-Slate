@@ -3,7 +3,7 @@
 //  Slate
 //
 //  Created by lin yize on 16-6-3.
-//  Copyright (c) 2016年 islate. All rights reserved.
+//  Copyright (c) 2016年 modernmedia. All rights reserved.
 //
 
 #import "WeChatWrapper.h"
@@ -14,7 +14,7 @@
 #define WeixinRequestState @"weixin_login"
 
 typedef void (^WeChatWrapperShareBlock)(BOOL success, BOOL isWeixinInstalled);
-typedef void (^WeChatWrapperLoginBlock)(BOOL success, NSError *error, NSString *openId, NSString *unionId, NSString *nickname, NSString *avatarUrl, NSString *rawInfo);
+typedef void (^WeChatWrapperLoginBlock)(BOOL success, NSError *error, NSString *openId, NSString *accessToken, NSString *unionId, NSString *nickname, NSString *avatarUrl, NSString *rawInfo);
 
 @interface WeChatWrapper () <WXApiDelegate>
 {
@@ -71,7 +71,7 @@ typedef void (^WeChatWrapperLoginBlock)(BOOL success, NSError *error, NSString *
 
 - (void)weixinLogin:(void (^)(BOOL isLogin, NSString *openId, NSString *unionId, NSString *nickname, NSString *avatarUrl, NSString *userAddingInfo))block
 {
-    [self login:^(BOOL success, NSError *error, NSString *openId, NSString *unionId, NSString *nickname, NSString *avatarUrl, NSString *rawInfo) {
+    [self login:^(BOOL success, NSError *error, NSString *openId, NSString *accessToken, NSString *unionId, NSString *nickname, NSString *avatarUrl, NSString *rawInfo) {
         if (error) {
             block(NO, nil, nil, nil, nil, nil);
         }
@@ -81,7 +81,7 @@ typedef void (^WeChatWrapperLoginBlock)(BOOL success, NSError *error, NSString *
     }];
 }
 
-- (void)login:(void (^)(BOOL success, NSError *error, NSString *openId, NSString *unionId, NSString *nickname, NSString *avatarUrl, NSString *rawInfo))block
+- (void)login:(void (^)(BOOL success, NSError *error, NSString *openId, NSString *accessToken, NSString *unionId, NSString *nickname, NSString *avatarUrl, NSString *rawInfo))block
 {
     if ([WXApi isWXAppInstalled])
     {
@@ -106,7 +106,7 @@ typedef void (^WeChatWrapperLoginBlock)(BOOL success, NSError *error, NSString *
             NSError * error = [NSError errorWithDomain:@"Wechat error"
                                                   code:200
                                               userInfo:@{NSLocalizedDescriptionKey:@"wechat not installed"}];
-            block(NO,error,nil,nil,nil,nil,nil);
+            block(NO,error,nil,nil,nil,nil,nil,nil);
         }
     }
 }
@@ -239,7 +239,7 @@ typedef void (^WeChatWrapperLoginBlock)(BOOL success, NSError *error, NSString *
                               NSError * error = [NSError errorWithDomain:@"Wechat error"
                                                                     code:300
                                                                 userInfo:@{NSLocalizedDescriptionKey:@"wechat unionid is empty"}];
-                              loginBlock(NO, error, nil,nil,nil,nil,nil);
+                              loginBlock(NO, error,nil, nil,nil,nil,nil,nil);
                               loginBlock = nil;
                           }
                       }
@@ -248,7 +248,7 @@ typedef void (^WeChatWrapperLoginBlock)(BOOL success, NSError *error, NSString *
                   {
                       if (loginBlock)
                       {
-                          loginBlock(NO,error,nil,nil,nil,nil,nil);
+                          loginBlock(NO,error,nil,nil,nil,nil,nil,nil);
                           loginBlock = nil;
                       }
                   }
@@ -266,7 +266,7 @@ typedef void (^WeChatWrapperLoginBlock)(BOOL success, NSError *error, NSString *
                       NSString *avatar = responseDict[@"headimgurl"];
                       if (loginBlock)
                       {
-                          loginBlock(YES,nil,userOpenId,userUniqueId,nickname,avatar,self.userAddingInfo);
+                          loginBlock(YES,nil,userOpenId,userToken,userUniqueId,nickname,avatar,self.userAddingInfo);
                           loginBlock = nil;
                       }
                   }
@@ -274,7 +274,7 @@ typedef void (^WeChatWrapperLoginBlock)(BOOL success, NSError *error, NSString *
                   {
                       if (loginBlock)
                       {
-                          loginBlock(NO,error,nil,nil,nil,nil,nil);
+                          loginBlock(NO,error,nil,nil,nil,nil,nil,nil);
                           loginBlock = nil;
                       }
                   }
@@ -360,7 +360,7 @@ typedef void (^WeChatWrapperLoginBlock)(BOOL success, NSError *error, NSString *
                     NSError * error = [NSError errorWithDomain:@"Wechat error"
                                                           code:500
                                                       userInfo:@{NSLocalizedDescriptionKey:errorText}];
-                    loginBlock(NO,error,nil,nil,nil,nil,nil);
+                    loginBlock(NO,error,nil,nil,nil,nil,nil,nil);
                     loginBlock = nil;
                 }
             }
@@ -373,7 +373,7 @@ typedef void (^WeChatWrapperLoginBlock)(BOOL success, NSError *error, NSString *
                 NSError * error = [NSError errorWithDomain:@"Wechat error"
                                                       code:response.errCode
                                                   userInfo:@{NSLocalizedDescriptionKey:response.errStr}];
-                loginBlock(NO,error,nil,nil,nil,nil,nil);
+                loginBlock(NO,error,nil,nil,nil,nil,nil,nil);
                 loginBlock = nil;
             }
         }

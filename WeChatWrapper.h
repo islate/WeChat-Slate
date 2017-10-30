@@ -3,7 +3,7 @@
 //  Slate
 //
 //  Created by lin yize on 16-6-3.
-//  Copyright (c) 2016年 islate. All rights reserved.
+//  Copyright (c) 2016年 modernmedia. All rights reserved.
 //
 
 #import <Foundation/Foundation.h>
@@ -31,6 +31,6 @@
 - (BOOL)canHandleURL:(NSURL *)url;
 - (BOOL)handleOpenURL:(NSURL *)url;
 
-- (void)login:(void (^)(BOOL success, NSError *error, NSString *openId, NSString *unionId, NSString *nickname, NSString *avatarUrl, NSString *rawInfo))loginBlock;
+- (void)login:(void (^)(BOOL success, NSError *error, NSString *openId, NSString *accessToken, NSString *unionId, NSString *nickname, NSString *avatarUrl, NSString *rawInfo))loginBlock;
 
 @end
