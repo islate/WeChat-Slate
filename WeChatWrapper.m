@@ -370,6 +370,9 @@ typedef void (^WeChatWrapperLoginBlock)(BOOL success, NSError *error, NSString *
             // 没有授权
             if (loginBlock)
             {
+                if (response.errStr == nil) {
+                    response.errStr = @"";
+                }
                 NSError * error = [NSError errorWithDomain:@"Wechat error"
                                                       code:response.errCode
                                                   userInfo:@{NSLocalizedDescriptionKey:response.errStr}];
